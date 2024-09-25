@@ -13,12 +13,12 @@ def estimate_number_generator(estimate_id):
 
 class Estimate(models.Model):
     note = models.TextField(max_length=255, blank=True, null=True)
-    created_on = models.DateTimeField()
+    created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
     archive = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ["-created_on"]
 
     def __str__(self):
         return estimate_number_generator(self.id)
