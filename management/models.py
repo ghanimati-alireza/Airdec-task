@@ -1,14 +1,12 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+from utils.models import BaseModel
 
-# Create your models here.
 
-
-class Equipment(models.Model):
-    name = models.CharField(max_length=255, blank=False)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    flag = models.BooleanField(default=True, help_text="Whether its active or not")
+class Equipment(BaseModel):
+    name = models.CharField(max_length=255, blank=False, verbose_name=_('Name'))
+    price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_('Price'))
+    is_active = models.BooleanField(default=True, help_text="Whether its active or not", verbose_name=_('Is Active'))
 
     class Meta:
         ordering = ["name"]
