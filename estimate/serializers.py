@@ -22,8 +22,7 @@ class EstimateSerializer(serializers.ModelSerializer):
         equipments_data = validated_data.pop('equipments', [])
         estimate = Estimate.objects.create(**validated_data)
 
-        for equipment_data in equipments_data:
-            EstimateEquipment.objects.create(estimate=estimate, **equipment_data)
+        self._create_or_update_equipments(estimate, equipments_data)
 
         return estimate
 
@@ -40,3 +39,12 @@ class EstimateSerializer(serializers.ModelSerializer):
             EstimateEquipment.objects.create(estimate=instance, **equipment_data)
 
         return instance
+
+    def _create_or_update_equipments(self, estimate, equipments_data):
+        """
+        Helper method to create or update equipment instances associated with the estimate.
+        """
+        equipment_instances = [
+            EstimateEquipment(estimate=estimate, **equipment_data) for equipment_data in equipments_data
+        ]
+        EstimateEquipment.objects.bulk_create(equipment_instances)  # Bulk create for efficiency
