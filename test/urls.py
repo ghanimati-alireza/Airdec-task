@@ -7,7 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Application-specific URLs
-    path('api/v1/estimate/', include('estimate.urls', namespace='estimate')),  # Added API versioning and namespace
+    path('api/v1/estimate/', include(('estimate.urls', 'estimate'), namespace='estimate')),
 
     # JWT Authentication endpoints
     path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
