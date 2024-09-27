@@ -28,15 +28,18 @@ class EstimateSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         equipments_data = validated_data.pop('equipments', [])
-        
-        # Update the Estimate object
-        instance.note = validated_data.get('note', instance.note)
-        instance.is_archived = validated_data.get('is_archived', instance.is_archived)
+
+        # Update instance fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
         instance.save()
 
-        instance.equipments.all().delete()
-        for equipment_data in equipments_data:
-            EstimateEquipment.objects.create(estimate=instance, **equipment_data)
+        # Handle equipments
+        if equipments_data is not None:
+            instance.equipments.all().delete()
+            self._create_or_update_equipments(instance, equipments_data)
+
+        return instance
 
         return instance
 
