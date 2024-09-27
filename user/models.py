@@ -6,19 +6,27 @@ from django.utils.translation import gettext_lazy as _
 from utils.models import BaseModel
 import uuid
 
+# Validator for Iranian or American phone numbers
 phone_regex = RegexValidator(
-    regex=r"^\+{1}989\d{9}$",
-    message="Phone number must be entered in the format: "
-            "'+989xxxxxxxxx'. Up to 14 digits allowed.",
+    regex=r"^(?:\+98\d{9}|\+1\d{10}|\+1\s?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})$",
+    message=_("Phone number must be in one of the following formats: "
+              "'+989xxxxxxxxx' for Iranian numbers or '+1xxxxxxxxxx', '+1 (xxx) xxx-xxxx', "
+              "'+1 xxx-xxx-xxxx' for American numbers.")
 )
 
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
+    def get_queryset(self):
+        """
+        Override get_queryset to return only active (non-deleted) users.
+        """
+        return super().get_queryset().filter(deleted_at__isnull=True)
+
     def _create_user(self, email, password, **extra_fields):
         if not email:
-            raise ValueError("Users require an email field")
+            raise ValueError(_("The email field must be set"))
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -35,9 +43,9 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
 
         if extra_fields.get("is_staff") is not True:
-            raise ValueError("Superuser must have is_staff=True.")
+            raise ValueError(_("Superuser must have is_staff=True."))
         if extra_fields.get("is_superuser") is not True:
-            raise ValueError("Superuser must have is_superuser=True.")
+            raise ValueError(_("Superuser must have is_superuser=True."))
 
         return self._create_user(email, password, **extra_fields)
 
