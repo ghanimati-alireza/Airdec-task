@@ -1,11 +1,13 @@
 from rest_framework import serializers
 from .models import Estimate, EstimateEquipment
 
+
 class EstimateEquipmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = EstimateEquipment
         fields = ['id', 'equipment', 'quantity', 'price_override', 'created_at']
         read_only_fields = ['id', 'created_at']
+
 
 class EstimateSerializer(serializers.ModelSerializer):
     equipments = EstimateEquipmentSerializer(many=True, required=False)
@@ -14,6 +16,7 @@ class EstimateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Estimate
         fields = ['id', 'note', 'created_at', 'created_by', 'is_archived', 'equipments', 'equipments_list']
+        read_only_fields = ['id', 'created_at']
 
     def create(self, validated_data):
         equipments_data = validated_data.pop('equipments', [])
