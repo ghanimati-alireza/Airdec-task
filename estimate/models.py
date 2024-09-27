@@ -20,6 +20,8 @@ class Estimate(BaseModel):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = _("Estimate")
+        verbose_name_plural = _("Estimates")
 
     def __str__(self):
         return estimate_number_generator(self.id)
