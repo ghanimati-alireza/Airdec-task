@@ -18,6 +18,12 @@ phone_regex = RegexValidator(
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
+    def get_queryset(self):
+        """
+        Override get_queryset to return only active (non-deleted) users.
+        """
+        return super().get_queryset().filter(deleted_at__isnull=True)
+
     def _create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError("Users require an email field")
