@@ -6,10 +6,12 @@ from django.utils.translation import gettext_lazy as _
 from utils.models import BaseModel
 import uuid
 
+# Validator for Iranian or American phone numbers
 phone_regex = RegexValidator(
-    regex=r"^\+{1}989\d{9}$",
-    message="Phone number must be entered in the format: "
-            "'+989xxxxxxxxx'. Up to 14 digits allowed.",
+    regex=r"^(?:\+98\d{9}|\+1\d{10}|\+1\s?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})$",
+    message=_("Phone number must be in one of the following formats: "
+              "'+989xxxxxxxxx' for Iranian numbers or '+1xxxxxxxxxx', '+1 (xxx) xxx-xxxx', "
+              "'+1 xxx-xxx-xxxx' for American numbers.")
 )
 
 
