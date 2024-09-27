@@ -39,6 +39,9 @@ class EstimateEquipment(BaseModel):
 
     class Meta:
         verbose_name = _("Estimate Equipment")
+        verbose_name_plural = _("Estimate Equipments")
+        unique_together = (
+        'estimate', 'equipment')  # Ensures the same equipment isn't added multiple times for the same estimate
 
     def __str__(self):
         return estimate_number_generator(self.estimate.id) + " " + self.equipment.name
