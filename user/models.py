@@ -1,9 +1,16 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from utils.models import BaseModel
 import uuid
+
+phone_regex = RegexValidator(
+    regex=r"^\+{1}989\d{9}$",
+    message="Phone number must be entered in the format: "
+            "'+989xxxxxxxxx'. Up to 14 digits allowed.",
+)
 
 
 class UserManager(BaseUserManager):
@@ -40,6 +47,8 @@ class User(AbstractUser, BaseModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(null=False, blank=False, unique=True, verbose_name=_("Email Address"), )
     birthday = models.DateField(null=True, blank=True, verbose_name=_("Birthday"))
+    phone_number = models.CharField(max_length=20, null=True, blank=True,
+                                    validators=[phone_regex], unique=True, verbose_name=_("Phone Number"))
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
     objects = UserManager()
