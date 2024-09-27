@@ -31,8 +31,8 @@ class EstimateEquipment(BaseModel):
     estimate = models.ForeignKey(Estimate, on_delete=models.CASCADE,
                                  blank=False, null=True, related_name="equipments", verbose_name=_("Estimate"), )
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE,
-                                  blank=False, related_name="estimates",
-                                  verbose_name=_("Equipment"))  # TODO: find a better related_name
+                                  blank=False, related_name="estimate_equipments",
+                                  verbose_name=_("Equipment"))
     quantity = models.FloatField(blank=False, verbose_name=_("Quantity"), )
     price_override = models.DecimalField(max_digits=8, decimal_places=2,
                                          blank=True, null=True, verbose_name=_("Price Override"), )
